@@ -33,19 +33,40 @@ $readings = $stmt->fetchAll();
 include __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-section">
-    <article class="form-panel">
+<section class="page-section readings-page">
+    <div class="hero-panel mb-3">
+        <div>
+            <span class="eyebrow">Sensor history</span>
+            <h2>Review temperature and humidity records.</h2>
+            <p>Use the date filter to check specific monitoring periods. The latest 500 matching records are shown.</p>
+        </div>
+        <div class="hero-actions">
+            <a class="btn btn-outline-primary btn-lg" href="dashboard.php">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <article class="form-panel filter-panel">
+        <div class="form-section-title">
+            <span>🔎</span>
+            <div>
+                <h2>Filter readings</h2>
+                <p>Leave dates empty to show the newest readings.</p>
+            </div>
+        </div>
+
         <form class="row g-3 align-items-end" method="get">
             <div class="col-12 col-md-4">
                 <label class="form-label" for="from">From date</label>
                 <input class="form-control form-control-lg" type="date" id="from" name="from" value="<?= e($from) ?>">
             </div>
+
             <div class="col-12 col-md-4">
                 <label class="form-label" for="to">To date</label>
                 <input class="form-control form-control-lg" type="date" id="to" name="to" value="<?= e($to) ?>">
             </div>
+
             <div class="col-12 col-md-4 d-grid d-md-flex gap-2">
-                <button class="btn btn-primary btn-lg" type="submit">Filter</button>
+                <button class="btn btn-primary btn-lg" type="submit">Apply Filter</button>
                 <a class="btn btn-outline-secondary btn-lg" href="readings.php">Clear</a>
             </div>
         </form>
@@ -57,9 +78,11 @@ include __DIR__ . '/includes/header.php';
                 <span class="eyebrow">Newest first</span>
                 <h2>All Sensor Readings</h2>
             </div>
+            <span class="count-pill"><?= e((string) count($readings)) ?> records</span>
         </div>
+
         <div class="table-responsive">
-            <table class="table align-middle">
+            <table class="table align-middle data-table">
                 <thead>
                 <tr>
                     <th>Date and Time</th>
@@ -73,8 +96,8 @@ include __DIR__ . '/includes/header.php';
                     <?php foreach ($readings as $reading): ?>
                         <tr>
                             <td><?= e(format_datetime_display($reading['created_at'])) ?></td>
-                            <td><?= e(number_display($reading['temperature'])) ?> C</td>
-                            <td><?= e(number_display($reading['humidity'])) ?>%</td>
+                            <td><strong><?= e(number_display($reading['temperature'])) ?> C</strong></td>
+                            <td><strong><?= e(number_display($reading['humidity'])) ?>%</strong></td>
                             <td>
                                 <?php foreach (reading_badges($reading, $settings) as $badge): ?>
                                     <span class="badge badge-soft-<?= e($badge['class']) ?>"><?= e($badge['label']) ?></span>
@@ -84,7 +107,9 @@ include __DIR__ . '/includes/header.php';
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">No readings found.</td>
+                        <td colspan="4" class="text-center py-4">
+                            <div class="empty-table-message">No readings found for the selected date range.</div>
+                        </td>
                     </tr>
                 <?php endif; ?>
                 </tbody>
