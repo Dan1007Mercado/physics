@@ -12,8 +12,12 @@ $activePage = $activePage ?? '';
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
 <div class="app-shell">
     <?php include __DIR__ . '/sidebar.php'; ?>
+
     <div class="main-area">
         <?php include __DIR__ . '/navbar.php'; ?>
-        <main class="content">
+
+        <main class="content" id="main-content">
