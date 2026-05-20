@@ -21,12 +21,24 @@ include __DIR__ . '/includes/header.php';
 ?>
 
 <section class="page-section">
+    <div class="hero-panel mb-3">
+        <div>
+            <span class="eyebrow">Batch records</span>
+            <h2>Review all recorded egg batches.</h2>
+            <p>Open a batch to view details, edit information, or update its current status.</p>
+        </div>
+        <div class="hero-actions">
+            <a class="btn btn-success btn-lg" href="add_batch.php">Add Eggs</a>
+            <a class="btn btn-outline-primary btn-lg" href="trays.php">View Trays</a>
+        </div>
+    </div>
+
     <?php if ($successMessage): ?>
-        <div class="alert alert-success"><?= e($successMessage) ?></div>
+        <div class="alert alert-success alert-readable"><?= e($successMessage) ?></div>
     <?php endif; ?>
 
     <?php if ($errors): ?>
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-readable">
             <?php foreach ($errors as $error): ?>
                 <div><?= e($error) ?></div>
             <?php endforeach; ?>
@@ -36,22 +48,22 @@ include __DIR__ . '/includes/header.php';
     <article class="table-card">
         <div class="card-heading">
             <div>
-                <span class="eyebrow">Batch records</span>
+                <span class="eyebrow">Newest first</span>
                 <h2>All Egg Batches</h2>
             </div>
-            <a class="btn btn-success btn-lg" href="add_batch.php">Add Eggs</a>
+            <span class="count-pill"><?= e((string) count($batches)) ?> records</span>
         </div>
 
         <div class="table-responsive">
-            <table class="table align-middle">
+            <table class="table align-middle data-table">
                 <thead>
                 <tr>
-                    <th>Batch Name</th>
+                    <th>Batch</th>
                     <th>Tray</th>
                     <th>Egg Type</th>
                     <th>Quantity</th>
                     <th>Start Date</th>
-                    <th>Expected Hatch Date</th>
+                    <th>Expected Hatch</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -59,42 +71,35 @@ include __DIR__ . '/includes/header.php';
                 <tbody>
                 <?php if ($batches): ?>
                     <?php foreach ($batches as $batch): ?>
+                        <?php $remaining = days_remaining_info($batch['expected_hatch_date']); ?>
                         <tr>
-                            <td><strong><?= e($batch['batch_name']) ?></strong></td>
+                            <td>
+                                <strong><?= e($batch['batch_name']) ?></strong>
+                                <small class="table-subtext d-block">Created <?= e(format_datetime_display($batch['created_at'])) ?></small>
+                            </td>
                             <td><?= e(tray_name((int) $batch['tray_number'])) ?></td>
                             <td><?= e($batch['egg_type'] ?: 'Not specified') ?></td>
-                            <td><?= e((string) $batch['quantity']) ?></td>
+                            <td><strong><?= e((string) $batch['quantity']) ?></strong> eggs</td>
                             <td><?= e(format_date_display($batch['start_date'])) ?></td>
-                            <td><?= e(format_date_display($batch['expected_hatch_date'])) ?></td>
+                            <td>
+                                <?= e(format_date_display($batch['expected_hatch_date'])) ?>
+                                <small class="table-subtext d-block days-<?= e($remaining['state']) ?>"><?= e($remaining['label']) ?></small>
+                            </td>
                             <td><span class="badge badge-soft-<?= e(batch_status_class($batch['status'])) ?>"><?= e($batch['status']) ?></span></td>
                             <td>
                                 <div class="table-actions">
-                                    <a class="btn btn-sm btn-primary" href="view_batch.php?id=<?= e((string) $batch['id']) ?>">View Details</a>
-                                    <a class="btn btn-sm btn-outline-primary" href="edit_batch.php?id=<?= e((string) $batch['id']) ?>">Edit Batch</a>
-                                    <?php if ($batch['status'] === 'Incubating'): ?>
-                                        <form method="post" class="d-inline">
-                                            <input type="hidden" name="batch_id" value="<?= e((string) $batch['id']) ?>">
-                                            <input type="hidden" name="action" value="hatched">
-                                            <button class="btn btn-sm btn-outline-success" type="submit">Mark as Hatched</button>
-                                        </form>
-                                        <form method="post" class="d-inline">
-                                            <input type="hidden" name="batch_id" value="<?= e((string) $batch['id']) ?>">
-                                            <input type="hidden" name="action" value="removed">
-                                            <button class="btn btn-sm btn-outline-secondary" type="submit">Remove Batch</button>
-                                        </form>
-                                        <form method="post" class="d-inline">
-                                            <input type="hidden" name="batch_id" value="<?= e((string) $batch['id']) ?>">
-                                            <input type="hidden" name="action" value="failed">
-                                            <button class="btn btn-sm btn-outline-danger" type="submit">Mark as Failed</button>
-                                        </form>
-                                    <?php endif; ?>
+                                    <a class="btn btn-sm btn-primary" href="view_batch.php?id=<?= e((string) $batch['id']) ?>">View</a>
+                                    <a class="btn btn-sm btn-outline-primary" href="edit_batch.php?id=<?= e((string) $batch['id']) ?>">Edit</a>
                                 </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-4">No egg batches recorded yet.</td>
+                        <td colspan="8" class="text-center py-4">
+                            <div class="empty-table-message">No egg batches recorded yet.</div>
+                            <a class="btn btn-success btn-lg mt-2" href="add_batch.php">Add First Batch</a>
+                        </td>
                     </tr>
                 <?php endif; ?>
                 </tbody>
