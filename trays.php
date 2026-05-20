@@ -19,13 +19,25 @@ $activeBatches = get_active_batches_by_tray($pdo);
 include __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-section">
+<section class="page-section trays-page">
+    <div class="hero-panel mb-3">
+        <div>
+            <span class="eyebrow">Tray management</span>
+            <h2>Manage Egg Tray 1 and Egg Tray 2.</h2>
+            <p>Each tray can have only one active Incubating batch to avoid confusion during monitoring.</p>
+        </div>
+        <div class="hero-actions">
+            <a class="btn btn-success btn-lg" href="add_batch.php">Add Eggs</a>
+            <a class="btn btn-outline-primary btn-lg" href="egg_batches.php">View All Batches</a>
+        </div>
+    </div>
+
     <?php if ($successMessage): ?>
-        <div class="alert alert-success"><?= e($successMessage) ?></div>
+        <div class="alert alert-success alert-readable"><?= e($successMessage) ?></div>
     <?php endif; ?>
 
     <?php if ($errors): ?>
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-readable">
             <?php foreach ($errors as $error): ?>
                 <div><?= e($error) ?></div>
             <?php endforeach; ?>
@@ -50,7 +62,10 @@ include __DIR__ . '/includes/header.php';
 
                     <?php if ($batch): ?>
                         <div class="batch-highlight">
-                            <h3><?= e($batch['batch_name']) ?></h3>
+                            <div>
+                                <span class="eyebrow">Currently incubating</span>
+                                <h3><?= e($batch['batch_name']) ?></h3>
+                            </div>
                             <span class="badge badge-soft-warning">Incubating</span>
                         </div>
 
@@ -68,7 +83,7 @@ include __DIR__ . '/includes/header.php';
                                 <dd><?= e(format_date_display($batch['start_date'])) ?></dd>
                             </div>
                             <div>
-                                <dt>Expected Hatch Date</dt>
+                                <dt>Expected Hatch</dt>
                                 <dd><?= e(format_date_display($batch['expected_hatch_date'])) ?></dd>
                             </div>
                             <div>
@@ -82,7 +97,7 @@ include __DIR__ . '/includes/header.php';
                         </dl>
 
                         <div class="notes-box compact">
-                            <h3>Notes</h3>
+                            <h3>Farmer Notes</h3>
                             <p><?= $batch['notes'] ? nl2br(e($batch['notes'])) : 'No notes recorded.' ?></p>
                         </div>
 
@@ -107,9 +122,9 @@ include __DIR__ . '/includes/header.php';
                         </div>
                     <?php else: ?>
                         <div class="empty-state tall-empty">
-                            <h3>No active batch in this tray</h3>
-                            <p>This tray is available for a new Incubating batch.</p>
-                            <a class="btn btn-success btn-lg" href="add_batch.php?tray=<?= e((string) $trayNumber) ?>">Add Eggs to Tray</a>
+                            <h3>Tray is available</h3>
+                            <p>No active batch is assigned to this tray. Add eggs only when the tray is ready.</p>
+                            <a class="btn btn-success btn-lg" href="add_batch.php?tray=<?= e((string) $trayNumber) ?>">Add Eggs to Tray <?= e((string) $trayNumber) ?></a>
                         </div>
                     <?php endif; ?>
                 </article>
