@@ -10,6 +10,7 @@ $activePage = $activePage ?? '';
     <title><?= e($pageTitle) ?> | Smart Egg Incubator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/hci-pages.css">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
