@@ -55,11 +55,18 @@
         }
 
         list.innerHTML = '';
-        var items = Array.isArray(alerts) && alerts.length ? alerts : ['No action needed right now.'];
+
+        var hasAlerts = Array.isArray(alerts) && alerts.length > 0;
+        var items = hasAlerts ? alerts : ['Condition is normal. No action needed right now.'];
 
         items.forEach(function (message) {
             var item = document.createElement('li');
             item.textContent = message;
+
+            if (!hasAlerts) {
+                item.className = 'safe';
+            }
+
             list.appendChild(item);
         });
     }
@@ -90,13 +97,58 @@
             .catch(function () {
                 updateStatus({
                     level: 'warning',
-                    message: 'No recent sensor reading'
+                    message: 'Unable to read latest sensor data'
                 });
-                updateAlerts(['No recent sensor reading']);
+                updateAlerts(['Check if Apache, MySQL, and the ESP32 network connection are working.']);
             });
     }
 
+    function setupScrollTopButton() {
+        var button = byId('scrollTopBtn');
+        if (!button) {
+            return;
+        }
+
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 320) {
+                button.classList.add('show');
+            } else {
+                button.classList.remove('show');
+            }
+        });
+
+        button.addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    function setupFormSafety() {
+        var forms = document.querySelectorAll('form');
+
+        forms.forEach(function (form) {
+            form.addEventListener('submit', function () {
+                var buttons = form.querySelectorAll('button[type="submit"]');
+
+                buttons.forEach(function (button) {
+                    if (button.dataset.keepEnabled === 'true') {
+                        return;
+                    }
+
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = 'Saving...';
+                    button.disabled = true;
+                });
+            });
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+        setupScrollTopButton();
+        setupFormSafety();
+
         if (!document.querySelector('[data-dashboard="true"]')) {
             return;
         }
