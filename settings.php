@@ -65,13 +65,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-section">
+<section class="page-section narrow-section settings-page">
+    <div class="hero-panel compact-hero mb-3">
+        <div>
+            <span class="eyebrow">Dashboard warning range</span>
+            <h2>Set the safe temperature and humidity limits.</h2>
+            <p>These settings only change warnings on the web dashboard. The HX-W3001 still controls the actual heater and fan.</p>
+        </div>
+    </div>
+
     <?php if ($successMessage): ?>
-        <div class="alert alert-success"><?= e($successMessage) ?></div>
+        <div class="alert alert-success alert-readable"><?= e($successMessage) ?></div>
     <?php endif; ?>
 
     <?php if ($errors): ?>
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-readable">
+            <strong>Please fix the following:</strong>
             <?php foreach ($errors as $error): ?>
                 <div><?= e($error) ?></div>
             <?php endforeach; ?>
@@ -79,11 +88,21 @@ include __DIR__ . '/includes/header.php';
     <?php endif; ?>
 
     <article class="form-panel">
-        <p class="helper-note">
-            These values are only used for dashboard warnings. They do not control the incubator hardware.
-        </p>
+        <div class="helper-note mb-3">
+            <strong>Important:</strong> These values are for alerts only. They do not switch the bulb, fan, or relay.
+        </div>
 
         <form method="post" class="row g-3">
+            <div class="col-12">
+                <div class="form-section-title">
+                    <span>🌡️</span>
+                    <div>
+                        <h2>Temperature range</h2>
+                        <p>Set the lowest and highest safe temperature for incubating eggs.</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-12 col-md-6">
                 <label class="form-label" for="min_temp">Lowest safe temperature</label>
                 <div class="input-group input-group-lg">
@@ -91,6 +110,7 @@ include __DIR__ . '/includes/header.php';
                     <span class="input-group-text">C</span>
                 </div>
             </div>
+
             <div class="col-12 col-md-6">
                 <label class="form-label" for="max_temp">Highest safe temperature</label>
                 <div class="input-group input-group-lg">
@@ -98,6 +118,17 @@ include __DIR__ . '/includes/header.php';
                     <span class="input-group-text">C</span>
                 </div>
             </div>
+
+            <div class="col-12 mt-2">
+                <div class="form-section-title">
+                    <span>💧</span>
+                    <div>
+                        <h2>Humidity range</h2>
+                        <p>Set the lowest and highest safe humidity percentage.</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-12 col-md-6">
                 <label class="form-label" for="min_humidity">Lowest safe humidity</label>
                 <div class="input-group input-group-lg">
@@ -105,6 +136,7 @@ include __DIR__ . '/includes/header.php';
                     <span class="input-group-text">%</span>
                 </div>
             </div>
+
             <div class="col-12 col-md-6">
                 <label class="form-label" for="max_humidity">Highest safe humidity</label>
                 <div class="input-group input-group-lg">
@@ -112,8 +144,10 @@ include __DIR__ . '/includes/header.php';
                     <span class="input-group-text">%</span>
                 </div>
             </div>
-            <div class="col-12">
+
+            <div class="col-12 action-row form-action-bar">
                 <button class="btn btn-success btn-lg" type="submit">Save Settings</button>
+                <a class="btn btn-outline-secondary btn-lg" href="dashboard.php">Back to Dashboard</a>
             </div>
         </form>
     </article>
